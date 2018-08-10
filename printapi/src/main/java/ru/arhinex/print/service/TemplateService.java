@@ -9,6 +9,10 @@ import java.util.UUID;
 
 public class TemplateService extends BaseService<TemplateTO, TemplateServiceStub> implements ITemplateService {
 
+    public TemplateService(String connectionUrl) {
+        super(connectionUrl);
+    }
+
     @Override
     protected TemplateServiceStub createStab() {
         return new TemplateServiceStub();

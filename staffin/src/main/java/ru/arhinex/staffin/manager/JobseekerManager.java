@@ -98,8 +98,9 @@ public class JobseekerManager extends BaseManager<Jobseeker, JobseekerTO> {
     public void sendFormToMail(UUID jobseekerId, UUID templateId) {
         Optional<JobseekerTO> jobseeker = Optional.ofNullable(getById(jobseekerId));
         checkPresent(jobseeker, new RuntimeException()); //TODO need true Exception
-        checkCondition(() -> StringUtils.isEmpty(jobseeker.get().getEmail()), new RuntimeException()); //TODO need true Exception
+        checkCondition(() -> !StringUtils.isEmpty(jobseeker.get().getEmail()), new RuntimeException()); //TODO need true Exception
         PrintResultTO printResultTO = templateServiceClient.getService().make(templateId);
+        checkCondition(() -> printResultTO != null, new RuntimeException()); //TODO need true Exception
         //TODO set from, to, copy
         MailTO mailTO = MailTO.builder()
                 .to(jobseeker.get().getEmail())

@@ -8,5 +8,5 @@ import ru.arhinex.baseapi.to.DateCreatedTO;
 @Setter
 public class PrintResultTO extends DateCreatedTO {
     private String name;
-    private byte[] body;
+    private byte[] body = new byte[0];
 }

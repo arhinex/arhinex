@@ -2,6 +2,7 @@ package ru.arhinex.staffin.clients;
 
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+import ru.arhinex.print.service.ITemplateService;
 import ru.arhinex.print.service.TemplateService;
 
 import javax.annotation.PostConstruct;
@@ -9,11 +10,11 @@ import javax.annotation.PostConstruct;
 @Component
 public class TemplateServiceClient {
     @Getter
-    private TemplateService service;
+    private ITemplateService service;
 
     @PostConstruct
     protected void init() {
         //TODO set connection url from settings
-        service = (TemplateService) TemplateService.builder().connectionUrl("").build();
+        service = new TemplateService("");
     }
 }

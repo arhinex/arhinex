@@ -7,6 +7,11 @@ import ru.arhinex.service.stub.BaseServiceStub;
 import java.util.List;
 
 abstract public class BaseService<T extends DateCreatedTO, M extends BaseServiceStub> extends AbstractService<M> implements IBaseService<T>{
+
+    public BaseService(String connectionUrl) {
+        super(connectionUrl);
+    }
+
     @Override
     public List<T> finadAll() {
         if (isMock()) return getStab().finadAll();

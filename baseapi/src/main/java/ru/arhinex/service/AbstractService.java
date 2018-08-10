@@ -8,6 +8,10 @@ abstract public class AbstractService<M> {
     private RestTemplate restTemplate = new RestTemplate();
     private M stab;
 
+    public AbstractService(String connectionUrl) {
+        this.connectionUrl = connectionUrl;
+    }
+
     public boolean isMock(){
         return StringUtils.isEmpty(connectionUrl);
     }
@@ -36,23 +40,5 @@ abstract public class AbstractService<M> {
     }
 
     protected abstract M createStab();
-
-    public static ServiceBuilder builder() {
-        return new ServiceBuilder();
-    }
-
-
-    public static class ServiceBuilder {
-        private AbstractService service;
-
-        public AbstractService build() {
-            return service;
-        }
-
-        public ServiceBuilder connectionUrl(String url) {
-            service.setConnectionUrl(url);
-            return this;
-        }
-    }
 
 }

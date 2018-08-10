@@ -7,6 +7,10 @@ import java.util.UUID;
 
 public class EmployeeService extends BaseService<EmployeeTO, EmployeeServiceStub> implements IEmployeeService {
 
+    public EmployeeService(String connectionUrl) {
+        super(connectionUrl);
+    }
+
     @Override
     protected EmployeeServiceStub createStab() {
         return new EmployeeServiceStub();

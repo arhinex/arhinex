@@ -6,6 +6,10 @@ import ru.arhinex.service.AbstractService;
 
 public class MailService extends AbstractService<MailServiceStub> implements IMailService {
 
+    public MailService(String connectionUrl) {
+        super(connectionUrl);
+    }
+
     @Override
     protected MailServiceStub createStab() {
         return new MailServiceStub();
