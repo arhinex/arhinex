@@ -12,6 +12,8 @@ import java.util.*;
 public class JobseekerTO extends NamedTO {
     private String fio;
     private String resume;
+    private String phoneNumber;
+    private String email;
     private Date lastResumeUpdate;
     private List<JobseekerHistoryTO> histories = new ArrayList<>();
 

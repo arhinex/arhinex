@@ -18,6 +18,8 @@ import java.util.List;
 public class Jobseeker extends NamedEntity {
     private String fio;
     private String resume;
+    private String phoneNumber;
+    private String email;
     private Date lastResumeUpdate;
     @DBRef
     private List<JobseekerHistory> histories = new ArrayList<>();

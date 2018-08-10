@@ -39,6 +39,10 @@
             <artifactId>emailsender-api</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>ru.arhinex</groupId>
+            <artifactId>print-api</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>

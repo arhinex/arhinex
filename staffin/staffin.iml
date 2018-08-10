@@ -16,6 +16,7 @@
     <orderEntry type="module" module-name="employeeapi" />
     <orderEntry type="module" module-name="staffinapi" />
     <orderEntry type="module" module-name="emailsenderapi" />
+    <orderEntry type="module" module-name="printapi" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:2.0.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.0.7.RELEASE" level="project" />

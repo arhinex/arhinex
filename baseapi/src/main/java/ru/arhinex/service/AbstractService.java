@@ -37,5 +37,22 @@ abstract public class AbstractService<M> {
 
     protected abstract M createStab();
 
+    public static ServiceBuilder builder() {
+        return new ServiceBuilder();
+    }
+
+
+    public static class ServiceBuilder {
+        private AbstractService service;
+
+        public AbstractService build() {
+            return service;
+        }
+
+        public ServiceBuilder connectionUrl(String url) {
+            service.setConnectionUrl(url);
+            return this;
+        }
+    }
 
 }

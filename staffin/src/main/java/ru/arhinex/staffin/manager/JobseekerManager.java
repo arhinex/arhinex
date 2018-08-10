@@ -1,10 +1,15 @@
 package ru.arhinex.staffin.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.arhinex.baseentity.manager.BaseManager;
 import ru.arhinex.baseentity.repository.BaseRepository;
+import ru.arhinex.emailsender.to.MailTO;
+import ru.arhinex.print.to.PrintResultTO;
+import ru.arhinex.staffin.clients.MailSenderServiceClient;
+import ru.arhinex.staffin.clients.TemplateServiceClient;
 import ru.arhinex.staffin.entity.Jobseeker;
 import ru.arhinex.staffin.repository.JobseekerRepository;
 import ru.arhinex.staffinapi.to.*;
@@ -26,6 +31,12 @@ public class JobseekerManager extends BaseManager<Jobseeker, JobseekerTO> {
 
     @Autowired
     private VacancyManager vacancyManager;
+
+    @Autowired
+    private TemplateServiceClient templateServiceClient;
+
+    @Autowired
+    private MailSenderServiceClient mailSenderServiceClient;
 
     public JobseekerTO changeStatus(UUID id, UUID statusId) {
         Optional<JobseekerTO> jobseeker = Optional.ofNullable(getById(id));
@@ -84,4 +95,16 @@ public class JobseekerManager extends BaseManager<Jobseeker, JobseekerTO> {
     }
 
 
+    public void sendFormToMail(UUID jobseekerId, UUID templateId) {
+        Optional<JobseekerTO> jobseeker = Optional.ofNullable(getById(jobseekerId));
+        checkPresent(jobseeker, new RuntimeException()); //TODO need true Exception
+        checkCondition(() -> StringUtils.isEmpty(jobseeker.get().getEmail()), new RuntimeException()); //TODO need true Exception
+        PrintResultTO printResultTO = templateServiceClient.getService().make(templateId);
+        //TODO set from, to, copy
+        MailTO mailTO = MailTO.builder()
+                .to(jobseeker.get().getEmail())
+                .messageBody(new String(printResultTO.getBody()))
+                .build();
+        mailSenderServiceClient.getService().sendMail(mailTO);
+    }
 }

@@ -11,6 +11,7 @@ import ru.arhinex.staffinapi.to.VacancyStatusTO;
 import ru.arhinex.staffinapi.to.VacancyTO;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -77,7 +78,9 @@ public class JobseekerManagerTest extends BaseTest {
 
     @Test
     public void check_send_offer() {
-
+        JobseekerTO obj = createSomeJobseeker("test");
+        //TODO
+        manager.sendFormToMail(UUID.randomUUID());
     }
 
 

@@ -11,8 +11,10 @@ import ru.arhinex.baseentity.repository.BaseRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class BaseManager<T extends DateCreatedEntity, TO extends DateCreatedTO> implements IBaseManager<T> {
@@ -58,11 +60,21 @@ public abstract class BaseManager<T extends DateCreatedEntity, TO extends DateCr
         }
         if (value.getCreated() == null){
             value.setCreated(new Date());
-            value.setCreatedBy("");//FIXME
+            value.setCreatedBy("");//TODO
         }
         value.setUpdated(new Date());
-        value.setUpdatedBy("");//FIXME
+        value.setUpdatedBy("");//TODO
         return value;
+    }
+
+    public <E extends RuntimeException> void checkCondition(Supplier<Boolean> supplier, E exception) throws E {
+        if (!supplier.get()) {
+            throw exception;
+        }
+    }
+
+    public <E extends RuntimeException> void checkPresent(Optional optional, E exception) throws E {
+        checkCondition(() -> optional.isPresent(), exception);
     }
 
     public abstract BaseRepository<T> getBaseRepository();
