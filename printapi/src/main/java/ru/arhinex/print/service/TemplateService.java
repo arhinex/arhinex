@@ -1,6 +1,7 @@
 package ru.arhinex.print.service;
 
 import ru.arhinex.print.service.stub.TemplateServiceStub;
+import ru.arhinex.print.to.PrintRequestTO;
 import ru.arhinex.print.to.PrintResultTO;
 import ru.arhinex.print.to.TemplateTO;
 import ru.arhinex.service.BaseService;
@@ -25,8 +26,8 @@ public class TemplateService extends BaseService<TemplateTO, TemplateServiceStub
     }
 
     @Override
-    public PrintResultTO make(UUID templateId) {
-        if (isMock()) return getStab().make(templateId);
-        return getRestTemplate().getForObject(getConnectionUrl() + "/" + templateId, PrintResultTO.class);
+    public PrintResultTO make(UUID templateId, PrintRequestTO resultTO) {
+        if (isMock()) return getStab().make(templateId, resultTO);
+        return getRestTemplate().postForObject(getConnectionUrl() + "/" + templateId, resultTO, PrintResultTO.class);
     }
 }

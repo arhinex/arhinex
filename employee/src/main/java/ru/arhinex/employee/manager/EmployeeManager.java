@@ -1,6 +1,5 @@
 package ru.arhinex.employee.manager;
 
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +14,6 @@ import ru.arhinex.to.EmployeeTO;
 public class EmployeeManager extends BaseManager<Employee, EmployeeTO> {
     @Autowired
     private EmployeeRepository employeeRepository;
-    @Autowired
-    private MapperFacade orikaMapperFacade;
 
     @Override
     public BaseRepository<Employee> getBaseRepository() {

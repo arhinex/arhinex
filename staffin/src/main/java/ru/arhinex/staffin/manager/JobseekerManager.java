@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.arhinex.baseentity.manager.BaseManager;
 import ru.arhinex.baseentity.repository.BaseRepository;
 import ru.arhinex.emailsender.to.MailTO;
+import ru.arhinex.print.to.PrintRequestTO;
 import ru.arhinex.print.to.PrintResultTO;
 import ru.arhinex.staffin.clients.MailSenderServiceClient;
 import ru.arhinex.staffin.clients.TemplateServiceClient;
@@ -95,11 +96,12 @@ public class JobseekerManager extends BaseManager<Jobseeker, JobseekerTO> {
     }
 
 
-    public void sendFormToMail(UUID jobseekerId, UUID templateId) {
+    public void sendFormToMail(UUID jobseekerId, UUID templateId, PrintRequestTO requestTO) {
         Optional<JobseekerTO> jobseeker = Optional.ofNullable(getById(jobseekerId));
         checkPresent(jobseeker, new RuntimeException()); //TODO need true Exception
         checkCondition(() -> !StringUtils.isEmpty(jobseeker.get().getEmail()), new RuntimeException()); //TODO need true Exception
-        PrintResultTO printResultTO = templateServiceClient.getService().make(templateId);
+
+        PrintResultTO printResultTO = templateServiceClient.getService().make(templateId, requestTO);
         checkCondition(() -> printResultTO != null, new RuntimeException()); //TODO need true Exception
         //TODO set from, to, copy
         MailTO mailTO = MailTO.builder()
@@ -107,5 +109,15 @@ public class JobseekerManager extends BaseManager<Jobseeker, JobseekerTO> {
                 .messageBody(new String(printResultTO.getBody()))
                 .build();
         mailSenderServiceClient.getService().sendMail(mailTO);
+    }
+
+    public JobseekerTO addComment(UUID jobseekerId, String comment) {
+        Optional<JobseekerTO> jobseeker = Optional.ofNullable(getById(jobseekerId));
+        checkPresent(jobseeker, new RuntimeException()); //TODO need true Exception
+        JobseekerTO jobseekerTO = jobseeker.get();
+        CommentTO commentTO = new CommentTO();
+        commentTO.setComment(comment);
+        jobseekerTO.getCurrentHistory().get().getComments().add(commentTO);
+        return save(jobseekerTO);
     }
 }

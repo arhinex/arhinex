@@ -8,8 +8,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.arhinex.staffinapi.to.VacancyStatusTO;
 import ru.arhinex.staffinapi.to.VacancyTO;
 
-import java.util.Date;
-
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -26,8 +24,6 @@ public class VacancyManagerTest extends BaseTest {
         vacancy = vacancyManager.save(vacancy);
 
         VacancyStatusTO status = createSomeVacancyStatus();
-        status = vacancyStatusManager.save(status);
-        assertNull(vacancy.getStatus());
         vacancyManager.changeStatus(vacancy.getId(), status);
 
         vacancy = vacancyManager.getById(vacancy.getId());
@@ -52,17 +48,4 @@ public class VacancyManagerTest extends BaseTest {
         assertNotNull(vacancy.getCloseDate());
     }
 
-    private VacancyTO createSomeVacancy() {
-        VacancyTO vacancy = new VacancyTO();
-        vacancy.setOpenDate(new Date());
-        vacancy.setDescription("Some description");
-        return vacancy;
-    }
-
-    private VacancyStatusTO createSomeVacancyStatus() {
-        VacancyStatusTO vacancyStatus = new VacancyStatusTO();
-        vacancyStatus.setCode("code1");
-        vacancyStatus.setName("name1");
-        return vacancyStatus;
-    }
 }

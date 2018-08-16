@@ -7,14 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.arhinex.print.service.stub.TemplateServiceStub;
+import ru.arhinex.print.to.PrintRequestTO;
 import ru.arhinex.print.to.PrintResultTO;
 import ru.arhinex.staffin.clients.TemplateServiceClient;
 import ru.arhinex.staffinapi.to.JobseekerTO;
 import ru.arhinex.staffinapi.to.JobseekerVacancyStatusTO;
-import ru.arhinex.staffinapi.to.VacancyStatusTO;
 import ru.arhinex.staffinapi.to.VacancyTO;
 
-import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -24,14 +23,7 @@ import static org.mockito.BDDMockito.given;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class JobseekerManagerTest extends BaseTest {
-    @Autowired
-    private JobseekerManager manager;
 
-    @Autowired
-    private VacancyManager vacancyManager;
-
-    @Autowired
-    private VacancyStatusManager vacancyStatusManager;
 
     @Autowired
     private JobseekerStatusManager statusManager;
@@ -44,9 +36,9 @@ public class JobseekerManagerTest extends BaseTest {
         JobseekerTO obj = createSomeJobseeker("test");
         VacancyTO vacancy = createSomeVacancy();
 
-        manager.addToVacancy(obj.getId(), vacancy.getId(), "Comment");
+        jobseekerManager.addToVacancy(obj.getId(), vacancy.getId(), "Comment");
 
-        obj = manager.getById(obj.getId());
+        obj = jobseekerManager.getById(obj.getId());
         assertEquals(1, obj.getHistories().size());
         assertEquals(vacancy, obj.getHistories().get(0).getVacancy());
 
@@ -64,13 +56,13 @@ public class JobseekerManagerTest extends BaseTest {
 
         JobseekerVacancyStatusTO statusTO = createSomeJobseekerStatus("name", "code", false, vacancy);
 
-        manager.addToVacancy(obj.getId(), vacancy.getId(), "Comment");
-        obj = manager.getById(obj.getId());
+        jobseekerManager.addToVacancy(obj.getId(), vacancy.getId(), "Comment");
+        obj = jobseekerManager.getById(obj.getId());
         assertEquals(1, obj.getHistories().size());
         assertEquals(vacancy, obj.getHistories().get(0).getVacancy());
 
-        manager.changeStatus(obj.getId(), statusTO.getId());
-        obj = manager.getById(obj.getId());
+        jobseekerManager.changeStatus(obj.getId(), statusTO.getId());
+        obj = jobseekerManager.getById(obj.getId());
 
         assertEquals(1, obj.getHistories().size());
         assertEquals(statusTO, obj.getCurrentStatus().get());
@@ -81,38 +73,32 @@ public class JobseekerManagerTest extends BaseTest {
         JobseekerTO obj = createSomeJobseeker("test");
         VacancyTO vacancy = createSomeVacancy();
         JobseekerVacancyStatusTO statusTO = createSomeJobseekerStatus("name", "code", false, vacancy);
-        manager.changeStatus(obj.getId(), statusTO.getId());
+        jobseekerManager.changeStatus(obj.getId(), statusTO.getId());
     }
 
     @Test
-    public void check_send_offer() {
+    public void check_send_mail_template() {
         JobseekerTO obj = createSomeJobseeker("test");
         given(templateServiceClient.getService()).willReturn(new TemplateServiceStub() {
             @Override
-            public PrintResultTO make(UUID templateId) {
+            public PrintResultTO make(UUID templateId, PrintRequestTO requestTO) {
                 return new PrintResultTO();
             }
         });
-        manager.sendFormToMail(obj.getId(), UUID.randomUUID());
+        jobseekerManager.sendFormToMail(obj.getId(), UUID.randomUUID(), new PrintRequestTO());
     }
 
-
-    private JobseekerTO createSomeJobseeker(String name) {
-        JobseekerTO obj = new JobseekerTO();
-        obj.setFio(name);
-        obj.setEmail("some@mail.ru");
-        return manager.save(obj);
+    @Test
+    public void check_add_comment() {
+        String comment = "Some comment";
+        JobseekerTO obj = createSomeJobseeker("test");
+        VacancyTO vacancy = createSomeVacancy();
+        createSomeJobseekerStatus("name", "code", false, vacancy);
+        jobseekerManager.addToVacancy(obj.getId(), vacancy.getId(), "Comment");
+        obj = jobseekerManager.addComment(obj.getId(), comment);
+        assertEquals(2, obj.getCurrentHistory().get().getComments().size());
+        assertEquals(comment, obj.getCurrentHistory().get().getComments().get(1).getComment());
     }
-
-    private VacancyTO createSomeVacancy() {
-        VacancyTO vacancyTO = new VacancyTO();
-        vacancyTO.setOpenDate(new Date());
-        vacancyTO.setDescription("test description");
-        vacancyTO.setGraid(createSomeIdentifiable());
-        vacancyTO.setStatus(createSomeVacancyStatus());
-        return vacancyManager.save(vacancyTO);
-    }
-
 
     private JobseekerVacancyStatusTO createSomeJobseekerStatus(String name, String code, boolean isStart, VacancyTO vacancyTO) {
         JobseekerVacancyStatusTO statusTO = new JobseekerVacancyStatusTO();
@@ -121,13 +107,6 @@ public class JobseekerManagerTest extends BaseTest {
         statusTO.setVacancy(vacancyTO);
         statusTO.setStart(isStart);
         return statusManager.save(statusTO);
-    }
-
-    private VacancyStatusTO createSomeVacancyStatus() {
-        VacancyStatusTO statusTO = new VacancyStatusTO();
-        statusTO.setCode("code1");
-        statusTO.setName("name1");
-        return vacancyStatusManager.save(statusTO);
     }
 
 }

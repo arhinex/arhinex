@@ -32,7 +32,13 @@
                 <groupId>ru.arhinex</groupId>
                 <artifactId>employee-api</artifactId>
                 <version>1.0</version>
-                <scope>compile</scope>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ru.arhinex</groupId>
+                <artifactId>security-api</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>ru.arhinex</groupId>
